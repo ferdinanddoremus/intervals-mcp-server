@@ -277,6 +277,8 @@ ChatGPT’s beta MCP connectors can also talk to this server over the SSE transp
    python src/intervals_mcp_server/server.py
    ```
 
+   `FASTMCP_HOST` and `FASTMCP_PORT` also apply to the Streamable HTTP transport (`MCP_TRANSPORT=streamable-http`). Use `FASTMCP_HOST=0.0.0.0` when running inside a Docker container so the published port can reach the server.
+
    The startup log prints the full URLs (for example `http://127.0.0.1:8765/sse`). ChatGPT needs that public URL, so forward the port with a tool such as `ngrok http 8765` if you are not exposing the server directly.
 
 2. In ChatGPT, open **Settings → Features → Custom MCP Connectors** and click **Add**. Fill in:
