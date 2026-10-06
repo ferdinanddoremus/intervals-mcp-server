@@ -39,6 +39,10 @@ Usage:
         - create_custom_item
         - update_custom_item
         - delete_custom_item
+        - list_coach_files
+        - read_coach_file
+        - write_coach_file
+        - append_coach_file
 
     See the README for more details on configuration and usage.
 """
@@ -95,6 +99,12 @@ from intervals_mcp_server.tools.custom_items import (  # pylint: disable=wrong-i
     get_custom_items,
     update_custom_item,
 )
+from intervals_mcp_server.tools.coach import (  # pylint: disable=wrong-import-position  # noqa: E402
+    append_coach_file,
+    list_coach_files,
+    read_coach_file,
+    write_coach_file,
+)
 
 # Re-export make_intervals_request and httpx_client for backward compatibility
 # pylint: disable=duplicate-code  # This __all__ list is intentionally similar to tools/__init__.py
@@ -119,6 +129,10 @@ __all__ = [
     "create_custom_item",
     "update_custom_item",
     "delete_custom_item",
+    "list_coach_files",
+    "read_coach_file",
+    "write_coach_file",
+    "append_coach_file",
 ]
 
 
