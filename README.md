@@ -91,6 +91,43 @@ Your athlete ID is typically visible in the URL when you're logged into Interval
 
 - `https://intervals.icu/athlete/i12345/...` where `i12345` is your athlete ID
 
+### 6. Coach folder (optional)
+
+The server can also give Claude a folder of Markdown notes (athlete profile, goals, training
+journal…) that it reads at the start of a session and updates at the end, from any device:
+
+| Tool | What it does |
+|------|--------------|
+| `list_coach_files(subdir="")` | Lists `.md` files recursively, with size and last modified date |
+| `read_coach_file(path)` | Returns the content and its `sha256` |
+| `write_coach_file(path, content, commit_message, expected_sha256=None)` | Creates or replaces a file; refuses if `expected_sha256` no longer matches (another session wrote it) |
+| `append_coach_file(path, content, commit_message)` | Appends to a file (created if missing), e.g. a monthly journal |
+
+Create the folder (it becomes a local git repository, so every change is a commit you can undo;
+nothing is pushed anywhere), then point `COACH_DIR` at it:
+
+```bash
+scripts/init-coach-dir.sh ~/coach/me
+```
+
+```
+COACH_DIR=/home/me/coach/me
+```
+
+If `COACH_DIR` is unset or missing, these tools return an error; the other tools keep working.
+
+Safety rules: paths are relative to `COACH_DIR` and resolved with `realpath`; anything outside
+it (`..`, absolute paths, symlinks pointing elsewhere), inside `.git`, or not ending in `.md` is
+refused. Writes are limited to 256 KB, atomic, serialized with a lock, and committed as
+`Claude Coach <coach@tetsuo.local>`. There is no delete or rename tool.
+
+With Docker, mount the folder and run as its owner, so files stay on the host and git accepts
+the repository:
+
+```bash
+docker run -d --user "$(id -u):$(id -g)" -v ~/coach/me:/coach -e COACH_DIR=/coach ... intervals-mcp python -m intervals_mcp_server.server
+```
+
 ## Updating
 
 This project is actively developed, with new features and fixes added regularly. To stay up to date, follow these steps:
